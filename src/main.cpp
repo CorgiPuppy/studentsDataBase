@@ -51,6 +51,15 @@ void createReport(const std::vector<Student>& database) {
 		<< "\t#text(style: \"italic\", size: 10pt)[Дата: #datetime.today().display(\"[day].[month].[year]\")]\n"
 	<< "]\n";
 
+    for (const Student& student : database) {
+		report << "#block(fill: rgb(\"#f0f0f0\"), inset: 8pt, radius: 4pt, stroke: (left: 2pt + blue))[\n"
+			<< "\t#text(weight: \"bold\")[Студент:] " << student.name << "\\\n"
+			<< "\t#text(weight: \"bold\")[Возраст:] " << student.age << "\\\n"
+			<< "\t#text(weight: \"bold\")[Специальность:] " << student.major << "\\\n"
+/bin/bash: line 1: :make: command not found
+		<< "]\n";
+	}
+
 	report.close();
 }
 
