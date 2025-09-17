@@ -21,5 +21,4 @@ jobs:
         
     - name: Build, test
       run: |
-        g++ -std=c++17 -o program.out main.cpp -lgtest -lgtest_main -pthread
-        ./program.out --test
+	  	make
