@@ -2,6 +2,7 @@
 #include <vector>
 #include <string>
 #include <fstream>
+#include "gtest/gtest.h"
 
 struct Student {
     std::string name;
@@ -56,16 +57,67 @@ void createReport(const std::vector<Student>& database) {
 			<< "\t#text(weight: \"bold\")[Студент:] " << student.name << "\\\n"
 			<< "\t#text(weight: \"bold\")[Возраст:] " << student.age << "\\\n"
 			<< "\t#text(weight: \"bold\")[Специальность:] " << student.major << "\\\n"
-/bin/bash: line 1: :make: command not found
 		<< "]\n";
 	}
 
 	report.close();
 }
 
-int main() {
-    std::vector<Student> database;
+// Тестовые функции
+double calculateAverageGPA(const std::vector<Student>& database) {
+    if (database.empty()) return 0.0;
 
+    double total = 0.0;
+    for (const Student& student : database) {
+        total += student.gpa;
+    }
+    return total / database.size();
+}
+
+bool isValidGPA(double gpa) {
+    return gpa >= 0.0 && gpa <= 5.0;
+}
+
+bool isValidAge(int age) {
+    return age >= 16 && age <= 100;
+}
+
+// Тесты GoogleTest
+TEST(StudentTest, CalculateAverageGPA) {
+    std::vector<Student> testDatabase;
+
+    Student s1{"Иван", 20, "Информатика", 4.5};
+    Student s2{"Мария", 21, "Математика", 3.8};
+    Student s3{"Петр", 22, "Физика", 4.2};
+
+    testDatabase.push_back(s1);
+    testDatabase.push_back(s2);
+    testDatabase.push_back(s3);
+
+    EXPECT_NEAR(calculateAverageGPA(testDatabase), (4.5 + 3.8 + 4.2) / 3, 0.001);
+}
+
+TEST(StudentTest, CalculateAverageGPAEmpty) {
+    std::vector<Student> emptyDatabase;
+    EXPECT_DOUBLE_EQ(calculateAverageGPA(emptyDatabase), 0.0);
+}
+
+TEST(StudentTest, ValidateGPA) {
+    EXPECT_TRUE(isValidGPA(3.5));
+    EXPECT_TRUE(isValidGPA(0.0));
+    EXPECT_TRUE(isValidGPA(5.0));
+    EXPECT_FALSE(isValidGPA(-1.0));
+    EXPECT_FALSE(isValidGPA(5.1));
+}
+
+int runTests(int argc, char **argv) {
+    std::cout << "Запуск тестов...\n";
+    ::testing::InitGoogleTest(&argc, argv);
+    return RUN_ALL_TESTS();
+}
+
+void runMainWork() { 
+    std::vector<Student> database;
     int choice;
     do {
         std::cout << "Меню:\n";
@@ -97,6 +149,15 @@ int main() {
                 std::cout << "Неверный выбор. Попробуйте снова.\n";
         }
     } while (choice != 0);
+}
 
-    return 0;
+int main(int argc, char **argv) {
+    if (argc > 1) {
+        ::testing::InitGoogleTest(&argc, argv);
+        return RUN_ALL_TESTS();
+    } else {
+        runMainWork();
+        return 0;
+    }
+
 }
