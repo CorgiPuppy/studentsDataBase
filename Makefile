@@ -10,7 +10,8 @@ SRC := $(wildcard $(SRC_DIR)/*.cpp)
 OBJ := $(patsubst $(SRC_DIR)/%.cpp, $(TARGET_DIR)/%.o, $(SRC))
 
 CPPC := g++
-CPPFLAGS := -lpthread -Wall
+CPPFLAGS := -std=c++20 -Wall -pthread -I/usr/src/gtest
+LDFLAGS := -pthread -lgtest -lgtest_main
 TPST := typst compile --root .
 ZTHR := zathura
 
@@ -20,15 +21,15 @@ all: clean-report run-src run-report clean-target
 
 run-src: $(EXE)
 	@echo "Running.."
-	@./$<
+	@./$< --test
 
 $(EXE): $(OBJ) | $(TARGET_DIR)
 	@echo "Building binaries.."
-	@$(CPPC) $^ -o $@
+	@$(CPPC) $(OBJ) -o $@ $(LDFLAGS)
 
 $(TARGET_DIR)/%.o: $(SRC_DIR)/%.cpp $(INC) | $(TARGET_DIR)
 	@echo "Building objects.."
-	@$(CPPC) $(CPPFLAGS) -c $< -o $@ -I $(INC_DIR)
+	@$(CPPC) $(CPPFLAGS) -c $< -o $@
 
 $(TARGET_DIR):
 	@echo "Create a target dir.."
@@ -36,7 +37,7 @@ $(TARGET_DIR):
 
 run-report: $(RPRT)
 	@echo "Running a report.."
-	@$(ZTHR) $<	
+	@$(ZTHR) $<
 
 $(RPRT): $(REPORT_DIR)/*.typ
 	@echo "Building pdf.."
@@ -46,6 +47,6 @@ clean-target:
 	@echo "Cleaning the target dir.."
 	@$(RM) -rv $(TARGET_DIR)
 
-clean-report: 
+clean-report:
 	@echo "Cleaning the report.."
 	@$(RM) $(RPRT)
