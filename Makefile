@@ -1,8 +1,7 @@
-SRC_DIR := src
 REPORT_DIR := report
 
 RPRT := $(REPORT_DIR)/report.pdf
-SRC := $(wildcard $(SRC_DIR)/*.cpp)
+SRC := main.cpp
 
 CPPC := g++
 CPPFLAGS := -std=c++20
@@ -12,11 +11,12 @@ ZTHR := zathura
 
 .PHONY: all
 
-all: clean-report run-src run-report clean-target
+all: clean-report run-src run-report
 
 run-src:
 	@echo "Running.."
 	@$(CPPC) $(CPPFLAGS) $(SRC) $(LDFLAGS) -o main.out
+	@./main.out --test
 
 run-report: $(RPRT)
 	@echo "Running a report.."
