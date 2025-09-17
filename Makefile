@@ -10,7 +10,7 @@ SRC := $(wildcard $(SRC_DIR)/*.cpp)
 OBJ := $(patsubst $(SRC_DIR)/%.cpp, $(TARGET_DIR)/%.o, $(SRC))
 
 CPPC := g++
-CPPFLAGS := -std=c++20 -Wall -pthread -I/usr/src/gtest
+CPPFLAGS := -std=c++20
 LDFLAGS := -pthread -lgtest -lgtest_main
 TPST := typst compile --root .
 ZTHR := zathura
