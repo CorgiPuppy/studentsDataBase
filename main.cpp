@@ -110,6 +110,41 @@ TEST(StudentTest, ValidateGPA) {
     EXPECT_FALSE(isValidGPA(5.1));
 }
 
+TEST(StudentTest, ValidateAge) {
+    EXPECT_TRUE(isValidAge(18));
+    EXPECT_TRUE(isValidAge(25));
+    EXPECT_FALSE(isValidAge(15));
+    EXPECT_FALSE(isValidAge(101));
+}
+
+TEST(ReportTest, CreateReportFileExists) {
+    std::vector<Student> testDatabase;
+
+    Student s1{"Анна", 20, "Информатика", 4.5};
+    Student s2{"Дмитрий", 21, "Математика", 3.8};
+
+    testDatabase.push_back(s1);
+    testDatabase.push_back(s2);
+
+    createReport(testDatabase);
+
+    std::ifstream file("report/report.typ");
+    EXPECT_TRUE(file.good());
+
+    if (file.good()) {
+        std::string content((std::istreambuf_iterator<char>(file)),
+                           std::istreambuf_iterator<char>());
+        EXPECT_FALSE(content.empty());
+
+        EXPECT_TRUE(content.find("Анна") != std::string::npos);
+        EXPECT_TRUE(content.find("Дмитрий") != std::string::npos);
+        EXPECT_TRUE(content.find("Информатика") != std::string::npos);
+        EXPECT_TRUE(content.find("Математика") != std::string::npos);
+    }
+
+    file.close();
+}
+
 int runTests(int argc, char **argv) {
     std::cout << "Запуск тестов...\n";
     ::testing::InitGoogleTest(&argc, argv);
